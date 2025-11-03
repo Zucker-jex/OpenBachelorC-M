@@ -103,6 +103,10 @@ def setup_game():
     if multiplayer_port > 0:
         start_reverse_proxy(emulator_id, multiplayer_port)
 
+    icebreaker_port = config["icebreaker_port"]
+    if icebreaker_port > 0:
+        start_reverse_proxy(emulator_id, icebreaker_port)
+
     frida_port = config["frida_port"]
     gadget_port = config["gadget_port"]
 

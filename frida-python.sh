@@ -99,3 +99,4 @@ if FRIDA_VERSION="$FRIDA_VERSION" FRIDA_CORE_DEVKIT="$PWD/../devkit" pip install
     echo "You can now use: import frida in Python"
 else
     echo "Error: Frida Python installation failed."
+fi
