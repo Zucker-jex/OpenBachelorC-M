@@ -8,7 +8,7 @@ import requests
 
 from .const import PACKAGE_NAME
 from .config import config
-from .adb import start_gadget
+from .adb import start_apk
 
 SCRIPT_DIRPATH = "rel/"
 
@@ -75,22 +75,54 @@ class Game:
             print("err: trainer is disabled")
 
 
-def start_game(emulator_id):
+def test_remote_port_loop():
+    for _ in range(100):
+        if test_remote_port():
+            break
+        else:
+            time.sleep(0.1)
+
+
+def attach_pc_game():
+    pid = "Gadget"
+
+    test_remote_port_loop()
+
     device = frida.get_remote_device()
 
+    return device, pid
+
+
+def start_game_in_emulator(emulator_id):
     if config["use_gadget"]:
+        start_apk(emulator_id)
         pid = "Gadget"
 
-        start_gadget(emulator_id)
+    test_remote_port_loop()
 
-        for i in range(100):
-            if test_remote_port():
-                break
-            else:
-                time.sleep(0.1)
+    device = frida.get_remote_device()
 
+    if not config["use_gadget"]:
+        if config["no_spawn"]:
+            start_apk(emulator_id)
+            for proc in device.enumerate_processes():
+                if (
+                    proc.name.lower().find("arknights") >= 0
+                    or proc.name.find("明日方舟") >= 0
+                ):
+                    pid = proc.name
+                    break
+        else:
+            pid = device.spawn(PACKAGE_NAME)
+
+    return device, pid
+
+
+def start_game(emulator_id):
+    if config["attach_pc"]:
+        device, pid = attach_pc_game()
     else:
-        pid = device.spawn(PACKAGE_NAME)
+        device, pid = start_game_in_emulator(emulator_id)
 
     host = config["host"]
     port = config["port"]
@@ -132,7 +164,9 @@ def start_game(emulator_id):
             is_emulated_realm=is_emulated_realm,
         )
 
-    device.resume(pid)
+    if not config["attach_pc"]:
+        if not config["no_spawn"]:
+            device.resume(pid)
 
     game = Game(device, pid, java_script, native_script, extra_script, trainer_script)
 

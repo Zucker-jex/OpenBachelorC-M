@@ -15,12 +15,14 @@ else:
 MAX_NUM_MUMU_EMU = 4
 MAX_NUM_LD_EMU = 4
 
+FRIDA_VERSION = "17.6.2"
+
 ARCH_TO_FRIDA_SERVER_XZ_FILEPATH = {
-    "arm64-v8a": "frida-server/frida-server-17.4.2-android-arm64.xz",
-    "x86_64": "frida-server/frida-server-17.4.2-android-x86_64.xz",
+    "arm64-v8a": f"frida-server/frida-server-{FRIDA_VERSION}-android-arm64.xz",
+    "x86_64": f"frida-server/frida-server-{FRIDA_VERSION}-android-x86_64.xz",
 }
 
-ANDROID_FRIDA_SERVER_FILEPATH = "/data/local/tmp/florida-17.4.2"
+ANDROID_FRIDA_SERVER_FILEPATH = f"/data/local/tmp/florida-{FRIDA_VERSION}"
 
 TMP_DIRPATH = "tmp/"
 
@@ -209,10 +211,7 @@ def start_frida_server(emulator_id):
 
     frida_port = config["frida_port"]
 
-    # flag "-C" avoids blocking
-    start_frida_server_cmd = (
-        f"'{ANDROID_FRIDA_SERVER_FILEPATH}' -l 127.0.0.1:{frida_port} -D -C"
-    )
+    start_frida_server_cmd = f"nohup '{ANDROID_FRIDA_SERVER_FILEPATH}' -l 127.0.0.1:{frida_port} -D -P -C > /dev/null 2>&1 &"
 
     proc = run_root_cmd(emulator_id, start_frida_server_cmd)
 
@@ -274,7 +273,7 @@ def clear_dumped_json(emulator_id):
     )
 
 
-def start_gadget(emulator_id):
+def start_apk(emulator_id):
     proc = subprocess.run(
         [
             ADB_FILEPATH,
@@ -334,3 +333,12 @@ def kill_frida_server(emulator_id):
     process_name = os.path.basename(ANDROID_FRIDA_SERVER_FILEPATH)
 
     kill_root_process(emulator_id, process_name)
+
+
+def kill_adb_server():
+    proc = subprocess.run(
+        [
+            ADB_FILEPATH,
+            "kill-server",
+        ],
+    )

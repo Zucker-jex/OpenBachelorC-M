@@ -16,6 +16,7 @@ from .adb import (
     clear_dumped_json,
     kill_frida_server,
     kill_root_process,
+    kill_adb_server,
 )
 from .config import config
 from .inject import start_game
@@ -57,6 +58,7 @@ def setup_config():
     parser = argparse.ArgumentParser()
     parser.add_argument("--no_proxy", action="store_true")
     parser.add_argument("--dump_json", action="store_true")
+    parser.add_argument("--attach_pc", action="store_true")
     args = parser.parse_args()
 
     if args.no_proxy:
@@ -66,12 +68,15 @@ def setup_config():
         config["enable_trainer"] = True
         config["trainer_config"]["dump_json"] = True
 
+    if args.attach_pc:
+        config["attach_pc"] = True
+
     if config["no_proxy"] and config["enable_trainer"]:
         print("warn: trainer is disabled when no proxy is enabled")
         config["enable_trainer"] = False
 
 
-def setup_game():
+def get_emulator_id():
     running_emulator_id_lst = get_running_emulators()
 
     if not running_emulator_id_lst:
@@ -86,6 +91,10 @@ def setup_game():
     emulator_id = running_emulator_id_lst[0]
     print(f"info: using emulator {emulator_id}")
 
+    return emulator_id
+
+
+def prepare_emulator(emulator_id):
     upload_frida_server_if_necessary(emulator_id)
 
     kill_root_process(emulator_id, "florida-")
@@ -116,11 +125,16 @@ def setup_game():
     else:
         start_forward_proxy(emulator_id, frida_port)
 
+
+def setup_game(emulator_id):
+    if not config["attach_pc"]:
+        prepare_emulator(emulator_id)
+
     game = start_game(emulator_id)
 
     print("info: game started")
 
-    return emulator_id, game
+    return game
 
 
 def run_cmd(game, text):
@@ -147,8 +161,13 @@ def run_cmd(game, text):
 
 
 def setup_cli(emulator_id, game):
-    register_callback_func("pull_dumped_json", lambda: pull_dumped_json(emulator_id))
-    register_callback_func("clear_dumped_json", lambda: clear_dumped_json(emulator_id))
+    if not config["attach_pc"]:
+        register_callback_func(
+            "pull_dumped_json", lambda: pull_dumped_json(emulator_id)
+        )
+        register_callback_func(
+            "clear_dumped_json", lambda: clear_dumped_json(emulator_id)
+        )
 
     session = PromptSession(
         history=FileHistory("trainer.txt"), completer=trainer_word_completer
@@ -184,14 +203,22 @@ def main():
     try:
         setup_config()
 
-        emulator_id, game = setup_game()
+        if config["attach_pc"]:
+            kill_adb_server()
+            emulator_id = None
+        else:
+            emulator_id = get_emulator_id()
+
+        game = setup_game(emulator_id)
 
         print("----------")
 
         setup_cli(emulator_id, game)
 
     finally:
-        cleanup(emulator_id)
+        if not config["attach_pc"]:
+            cleanup(emulator_id)
+            clear_forward_proxy(emulator_id)
 
 
 if __name__ == "__main__":

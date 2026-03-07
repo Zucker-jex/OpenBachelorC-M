@@ -101,7 +101,7 @@ def encrypt_file(filepath: Path):
     payload = cipher.encrypt(content)
     header = (
         LOCKER_VERSION.to_bytes(LEN_LOCKER_VERSION, byteorder="big") + nonce
-    ).ljust(LOCKER_HEADER_SIZE)
+    ).ljust(LOCKER_HEADER_SIZE, b"\0")
 
     encrypted_filepath = get_encrypted_filepath(filepath)
 
