@@ -4,6 +4,17 @@
 
 echo "Setting up OpenBachelorC for Android/Termux..."
 
+# Update package lists and upgrade existing packages
+pkg upgrade -y
+
+pkg install -y git
+pkg install -y python python-pip
+# pkg install -y rust
+# pkg install -y binutils
+pkg install -y android-tools
+# pkg install -y jq
+pkg install -y tsu
+
 # Install dependencies directly using pip
 echo "Installing Python dependencies..."
 python -m pip install --upgrade pip
