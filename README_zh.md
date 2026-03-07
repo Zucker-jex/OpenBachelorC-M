@@ -10,7 +10,7 @@
 - **Termux 应用**：从 [F-Droid](https://f-droid.org/en/packages/com.termux/) 下载安装，**请勿使用已停止更新的 Play Store 版本**。
 - **修补后的 PvZ Online APK**：准备好修改版游戏客户端。[OpenBachelorG](https://github.com/pfyy/OpenBachelorG)
 - **OpenBachelorC-M 项目文件**：获取完整的 `OpenBachelorC-M` 文件夹。
-- **备份文件**：`backup.tar.xz`，其中包含预配置的 Termux 环境。
+- **备份文件**（可选）：`backup.tar.xz`，包含预配置的 Termux 环境。**注意：恢复备份会完全覆盖您当前的 Termux 环境，请谨慎使用。强烈推荐使用下面的手动配置方式，以获得最佳兼容性和可控性。**
 
 ---
 
@@ -28,7 +28,7 @@
   内部存储/Download/OpenBachelorC-M/
   ```
 
-- 将 `backup.tar.xz` 文件放置到手机内部存储的根目录：
+- （可选）如果希望使用备份恢复，将 `backup.tar.xz` 文件放置到手机内部存储的根目录：
 
   ```
   内部存储/backup.tar.xz
@@ -57,21 +57,44 @@
 
 ## 第二阶段：Termux 环境部署
 
-### 1. 初始设置 Termux
+### 推荐方式：手动配置（使用 setup.sh）
 
-1. 打开 Termux 应用
-2. 授予存储权限：
+此方式将在您的设备上实时下载并编译所需组件，确保与您的系统架构完美兼容，并且不会覆盖您已有的任何自定义设置。后续更新维护也更加方便。
 
+1. **打开 Termux 并授予存储权限**  
+   首次打开 Termux 后，执行：
    ```bash
    termux-setup-storage
    ```
 
-3. 恢复备份环境：
+2. **执行一键配置脚本**  
+   进入项目目录并运行 `setup.sh`：
+   ```bash
+   cd ~/storage/downloads/OpenBachelorC-M
+   bash setup.sh
+   ```
+   该脚本将自动：
+   - 更新软件包列表
+   - 安装必要工具
+   - 安装所需的 Python 模块（通过 pip）
+   - 编译并安装 Frida 工具
 
+   等待脚本执行完成，环境即部署完毕。
+
+### 备选方式：使用备份恢复（快速但可能覆盖数据）
+
+如果您希望跳过手动配置，可以使用我们提供的备份文件。但请注意：
+
+- **恢复备份将完全覆盖 Termux 的 `$PREFIX` 目录，丢失所有之前安装的软件包和用户数据，环境将回滚到备份时的状态。**
+- 由于设备差异，恢复的环境可能无法保证所有组件都能正常工作。
+
+如果您仍决定使用此方法，请按以下步骤操作：
+
+1. **打开 Termux 并授予存储权限**（同上）
+2. **恢复备份环境**：
    ```bash
    termux-restore /sdcard/backup.tar.xz
    ```
-
    此过程需要一些时间，请等待完成。
 
 ---
@@ -95,7 +118,7 @@
 
 需要使用 Android 11 及以上系统自带的「无线调试」功能。
 
-1. **编辑登录脚本**：
+1. **编辑登录脚本**（禁用自动启动）：
 
    ```bash
    nano $PREFIX/etc/termux-login.sh
@@ -146,7 +169,7 @@
 
 **Q: 提示 Python 模块未找到（如 `No module named 'xxx'`）？**
 
-- **A:** 未正确执行备份恢复操作，请重新执行 `termux-restore /sdcard/backup.tar.xz`
+- **A:** 如果是手动配置，请确认 `setup.sh` 是否完整执行且无报错；如果是备份恢复，请重新执行 `termux-restore /sdcard/backup.tar.xz`（注意会覆盖数据）
 
 **Q: 如何停止正在运行的脚本？**
 
@@ -155,3 +178,7 @@
 **Q: 非 Root 用户每次都要手动操作吗？**
 
 - **A:** 是的。无线调试的配对码和端口在手机重启或无线调试开关重启后会失效，需要重新配对。可以考虑使用 Android 自动化应用（如「Tasker」或「MacroDroid」）来简化流程。
+
+**Q: 使用 `setup.sh` 和备份恢复有什么区别？**
+
+- **A:** `setup.sh` 会在您的设备上实时下载并编译所需组件，兼容性更好，也便于后续更新；备份恢复则是直接解压一个预先配置好的环境，速度更快，但可能因设备差异导致部分组件无法正常工作，**且会完全覆盖您当前的 Termux 环境**。因此，**强烈推荐优先使用 `setup.sh`。**
