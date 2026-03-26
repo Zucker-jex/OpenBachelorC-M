@@ -34,24 +34,37 @@
   内部存储/backup.tar.xz
   ```
 
-### 3. 配置服务器地址
+### 3. 配置离线模式（可选）
 
-使用文本编辑器打开以下文件：
+如果您希望使用 **离线模式** 在手机本地运行服务器：
+1. 下载 [OpenBachelorS](https://github.com/pfyy/OpenBachelorS)。
+2. 将解压后的文件夹放入 `Download` 目录并重命名为 `OpenBachelorS`。
+   ```
+   内部存储/Download/OpenBachelorS/
+   ```
+3. 将 `OpenBachelorC-M/termux/obs/` 目录下的所有文件复制到 `OpenBachelorS/` 目录中。
+4. （在 Termux 中）进入该目录并运行初始化脚本：
+   ```bash
+   cd ~/storage/downloads/OpenBachelorS/
+   sh setup.sh
+   ```
 
-```
-内部存储/Download/OpenBachelorC-M/conf/config.json
-```
+### 4. 配置服务器地址
 
-找到 `"host"` 字段，修改为您的自动化服务器 IP 地址：
+**方法一：自动配置（适用于 Root 用户）**
+使用 `start.sh` 启动（Root 用户默认方式）时，脚本会自动配置：
+- **离线模式**：自动设置为 `127.0.0.1`。
+- **在线模式**：默认为 `10.0.0.1`。
 
-```json
-{
-  "host": "127.0.0.1", // 修改为您的服务器地址
-  ...
-}
-```
+如需更改在线模式的默认 IP：
+1. 编辑 `start.sh`。
+2. 修改 `HOST="10.0.0.1"` 为您的服务器 IP。
 
-保存并关闭文件。
+**方法二：手动配置（适用于非 Root 用户）**
+如果您手动启动脚本（如 `sh main.sh`）而不使用 `start.sh`：
+1. 打开 `conf/config.json`。
+2. 找到 `"host"` 字段。
+3. 修改为您服务器的 IP 地址（本地服务器请填 `127.0.0.1`）。
 
 ---
 
@@ -112,6 +125,14 @@
 2. 重启 Termux 应用
 3. 自动启动流程：
    - Termux 启动时会自动执行 `~/storage/downloads/OpenBachelorC-M/start.sh` 脚本
+   - **选择运行模式**：
+     - 如果检测到服务端组件 (`OpenBachelorS`)，将显示选择菜单：
+       - `O` (Online)：在线模式，连接到远程服务器（默认 `10.0.0.1` 或 `start.sh` 中配置的地址）。
+       - `F` (Offline)：离线模式，启动本地服务器并连接到 `127.0.0.1`。
+       - `N` (Exit)：退出。
+     - 如果仅有客户端：
+       - `Y` (Yes)：连接到远程服务器。
+       - `N` (No)：退出。
    - 首次运行时可能需要授权 ADB 调试权限，请选择「总是允许」
 
 ### 情况二：设备未 Root（无 Root 权限）

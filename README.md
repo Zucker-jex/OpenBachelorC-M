@@ -36,24 +36,38 @@ Install Termux from F-Droid, and install the patched PvZ Online APK file.
   Internal Storage/backup.tar.xz
   ```
 
-### 3. Configure Server Address
+### 3. Setup Offline Mode (Optional)
 
-Use a text editor to open the following file:
+If you wish to run the server locally (Offline Mode):
+1. Download [OpenBachelorS](https://github.com/pfyy/OpenBachelorS).
+2. Place the unzipped folder into the `Download` directory and rename it to `OpenBachelorS`.
+   ```
+   Internal Storage/Download/OpenBachelorS/
+   ```
+3. Copy all files from `OpenBachelorC-M/termux/obs/` into the `OpenBachelorS/` directory.
+4. (In Termux) Navigate to the directory and run the initialization script:
+   ```bash
+   cd ~/storage/downloads/OpenBachelorS/
+   sh setup.sh
+   ```
 
-```
-Internal Storage/Download/OpenBachelorC-M/conf/config.json
-```
+### 4. Configure Server Address
 
-Locate the `"host"` field and modify it to your automation server's IP address:
+**Method 1: Automatic Configuration (Root Users - Recommended)**
+When using `start.sh` (default for Root users), the script handles configuration:
+- **Offline Mode**: Automatically sets host to `127.0.0.1`.
+- **Online Mode**: Defaults to `10.0.0.1`.
 
-```json
-{
-  "host": "127.0.0.1", // Change to your server address
-  ...
-}
-```
+If you need to connect to a different remote server address for **Online Mode**:
+1. Open `start.sh` with a text editor.
+2. Find the line `HOST="10.0.0.1"`.
+3. Change `10.0.0.1` to your server's IP address.
 
-Save and close the file.
+**Method 2: Manual Configuration (Non-Root Users)**
+If you start the script manually (e.g., `sh main.sh`) without using `start.sh`:
+1. Open `conf/config.json`.
+2. Locate the `"host"` field.
+3. Change the IP address to your server's address (use `127.0.0.1` for local server).
 
 ---
 
@@ -115,6 +129,14 @@ If you still decide to use this method, follow these steps:
 2. Restart the Termux application.
 3. Automatic startup process:
    - Upon startup, Termux will automatically execute the `~/storage/downloads/OpenBachelorC-M/start.sh` script.
+   - **Select Run Mode**:
+     - If the server component (`OpenBachelorS`) is detected, you will see a menu:
+       - `O` (Online): Connect to remote server (default IP `10.0.0.1` or as configured in `start.sh`).
+       - `F` (Offline): Start local server and connect to `127.0.0.1`.
+       - `N` (Exit): Exit.
+     - If only the client is present:
+       - `Y` (Yes): Connect to remote server.
+       - `N` (No): Exit.
    - The first run may require granting ADB debugging permissions; select "Always Allow."
 
 ### Scenario 2: Non-Rooted Device (Without Root Privileges)
