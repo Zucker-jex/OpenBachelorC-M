@@ -48,7 +48,7 @@ If you wish to run the server locally (Offline Mode):
 4. (In Termux) Navigate to the directory and run the initialization script:
    ```bash
    cd ~/storage/downloads/OpenBachelorS/
-   sh setup.sh
+   bash setup.sh
    ```
 
 ### 4. Configure Server Address
@@ -64,7 +64,7 @@ If you need to connect to a different remote server address for **Online Mode**:
 3. Change `10.0.0.1` to your server's IP address.
 
 **Method 2: Manual Configuration (Non-Root Users)**
-If you start the script manually (e.g., `sh main.sh`) without using `start.sh`:
+If you start the script manually (e.g., `bash main.sh`) without using `start.sh`:
 1. Open `conf/config.json`.
 2. Locate the `"host"` field.
 3. Change the IP address to your server's address (use `127.0.0.1` for local server).
@@ -179,7 +179,7 @@ Requires using the built-in "Wireless Debugging" feature available in Android 11
 
      ```bash
      cd ~/storage/downloads/OpenBachelorC-M/
-     sh main.sh
+     bash main.sh
      ```
 
 ---

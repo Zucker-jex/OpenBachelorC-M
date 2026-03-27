@@ -46,7 +46,7 @@
 4. （在 Termux 中）进入该目录并运行初始化脚本：
    ```bash
    cd ~/storage/downloads/OpenBachelorS/
-   sh setup.sh
+   bash setup.sh
    ```
 
 ### 4. 配置服务器地址
@@ -61,7 +61,7 @@
 2. 修改 `HOST="10.0.0.1"` 为您的服务器 IP。
 
 **方法二：手动配置（适用于非 Root 用户）**
-如果您手动启动脚本（如 `sh main.sh`）而不使用 `start.sh`：
+如果您手动启动脚本（如 `bash main.sh`）而不使用 `start.sh`：
 1. 打开 `conf/config.json`。
 2. 找到 `"host"` 字段。
 3. 修改为您服务器的 IP 地址（本地服务器请填 `127.0.0.1`）。
@@ -175,7 +175,7 @@
 
      ```bash
      cd ~/storage/downloads/OpenBachelorC-M/
-     sh main.sh
+     bash main.sh
      ```
 
 ---

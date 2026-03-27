@@ -22,7 +22,7 @@ python -m pip install "pycryptodome>=3.23.0"
 cd termux/ && bash build.sh
 
 LOGIN_SCRIPT="$PREFIX/etc/termux-login.sh"
-START_CMD="sh ~/storage/downloads/OpenBachelorC-M/start.sh"
+START_CMD="bash ~/storage/downloads/OpenBachelorC-M/start.sh"
 
 if [ ! -f "$LOGIN_SCRIPT" ]; then
     echo "$START_CMD" > "$LOGIN_SCRIPT"

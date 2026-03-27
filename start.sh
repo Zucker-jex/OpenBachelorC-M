@@ -3,7 +3,7 @@
 # Define variables
 CONFIG_FILE="$HOME/storage/downloads/OpenBachelorC-M/conf/config.json"
 SERVER_START_SCRIPT="$HOME/storage/downloads/OpenBachelorS/start.sh"
-TMUX_CMD="tmux new-session -d -s service1 'sh $SERVER_START_SCRIPT'"
+TMUX_CMD="tmux new-session -d -s service1 'bash $SERVER_START_SCRIPT'"
 CLIENT_MAIN_SCRIPT="$HOME/storage/downloads/OpenBachelorC-M/main.sh"
 HOST="10.0.0.1"
 
@@ -85,4 +85,4 @@ sleep 2
 
 # ========== Start OBC ==========
 echo "Starting OBC..."
-cd "$HOME/storage/downloads/OpenBachelorC-M/" && sh "$CLIENT_MAIN_SCRIPT"
+cd "$HOME/storage/downloads/OpenBachelorC-M/" && bash "$CLIENT_MAIN_SCRIPT"
