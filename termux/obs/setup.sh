@@ -3,7 +3,7 @@ echo "Setting up OpenBachelorS for Android/Termux..."
 
 pkg upgrade -y
 
-pkg install -y git python python-pip rust binutils aria2 postgresql
+pkg install -y git python python-pip rust binutils aria2 postgresql tmux
 
 export ANDROID_API_LEVEL=$(getprop ro.build.version.sdk)
 
