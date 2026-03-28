@@ -63,11 +63,11 @@ If you need to connect to a different remote server address for **Online Mode**:
 2. Find the line `HOST="10.0.0.1"`.
 3. Change `10.0.0.1` to your server's IP address.
 
-**Method 2: Manual Configuration (Non-Root Users)**
-If you start the script manually (e.g., `bash main.sh`) without using `start.sh`:
+**Method 2: Automatic Prompt + Manual Pair/Connect (Non-Root Users)**
+If your device is non-root, you can still use `start.sh`. The script will prompt required ADB steps automatically:
 1. Open `conf/config.json`.
 2. Locate the `"host"` field.
-3. Change the IP address to your server's address (use `127.0.0.1` for local server).
+3. For local workflow, keep it as `127.0.0.1`.
 
 ---
 
@@ -143,44 +143,30 @@ If you still decide to use this method, follow these steps:
 
 Requires using the built-in "Wireless Debugging" feature available in Android 11 and above.
 
-1. **Edit the Login Script**:
+1. **Run setup as usual**:
 
    ```bash
-   nano $PREFIX/etc/termux-login.sh
+   cd ~/storage/downloads/OpenBachelorC-M
+   bash setup.sh
    ```
 
-   Comment out the automatic startup command (add `#` at the beginning of the line):
+2. **Follow setup prompts to pair ADB**:
+   - Open "Developer options" -> "Wireless debugging".
+   - Tap "Pair device with pairing code".
+   - Keep Termux in split-screen or floating window.
+   - Enter pairing port and pairing code when prompted.
+   - The script runs: `adb pair 127.0.0.1:[Pairing Port]`.
+
+3. **Start normally (auto login or manual)**:
 
    ```bash
-   # sh ~/storage/downloads/OpenBachelorC-M/start.sh
+   bash ~/storage/downloads/OpenBachelorC-M/start.sh
    ```
 
-   Press `Ctrl+X`, then enter `Y` to save and exit.
-
-2. **Manual Operation Process for Each Startup**:
-
-   - Keep Termux in split-screen or small window mode.
-   - Enable Wireless Debugging in the Developer Options.
-   - Pair the device using a pairing code:
-
-     ```bash
-     adb pair localhost:[Pairing Port]
-     ```
-
-     Enter the displayed six-digit pairing code.
-
-   - Connect the device:
-
-     ```bash
-     adb connect localhost:[Connection Port]
-     ```
-
-   - Run the main script:
-
-     ```bash
-     cd ~/storage/downloads/OpenBachelorC-M/
-     bash main.sh
-     ```
+4. **Follow start prompts to connect ADB**:
+   - Enter connect port when prompted.
+   - The script runs: `adb connect 127.0.0.1:[Connect Port]`.
+   - Then OpenBachelorC continues automatically.
 
 ---
 
@@ -202,7 +188,7 @@ Requires using the built-in "Wireless Debugging" feature available in Android 11
 
 **Q: Do non-root users need to perform manual operations every time?**
 
-- **A:** Yes. The pairing code and port for Wireless Debugging become invalid after a device restart or toggling the Wireless Debugging switch, requiring re-pairing. Consider using Android automation apps (e.g., "Tasker" or "MacroDroid") to simplify the process.
+- **A:** Usually, you need to reconnect each time (`adb connect`), and in some cases re-pair (`adb pair`) after rebooting the device or toggling Wireless Debugging. The scripts now provide guided prompts for both steps.
 
 **Q: What is the difference between using `setup.sh` and the backup restore?**
 

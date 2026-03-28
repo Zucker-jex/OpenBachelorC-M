@@ -60,11 +60,11 @@
 1. 编辑 `start.sh`。
 2. 修改 `HOST="10.0.0.1"` 为您的服务器 IP。
 
-**方法二：手动配置（适用于非 Root 用户）**
-如果您手动启动脚本（如 `bash main.sh`）而不使用 `start.sh`：
+**方法二：脚本引导 + 手动配对连接（适用于非 Root 用户）**
+非 Root 设备也可直接使用 `start.sh`，脚本会自动提示所需的 ADB 操作：
 1. 打开 `conf/config.json`。
 2. 找到 `"host"` 字段。
-3. 修改为您服务器的 IP 地址（本地服务器请填 `127.0.0.1`）。
+3. 本地流程请保持为 `127.0.0.1`。
 
 ---
 
@@ -139,44 +139,30 @@
 
 需要使用 Android 11 及以上系统自带的「无线调试」功能。
 
-1. **编辑登录脚本**（禁用自动启动）：
+1. **按常规执行 setup**：
 
    ```bash
-   nano $PREFIX/etc/termux-login.sh
+   cd ~/storage/downloads/OpenBachelorC-M
+   bash setup.sh
    ```
 
-   注释掉自动启动命令（在行首添加 `#`）：
+2. **根据 setup 提示完成 ADB 配对**：
+   - 在手机中打开「开发者选项」->「无线调试」。
+   - 点击「使用配对码配对设备」。
+   - Termux 保持分屏或小窗。
+   - 按提示输入配对端口和配对码。
+   - 脚本会执行：`adb pair 127.0.0.1:[配对端口]`。
+
+3. **正常启动（自动启动或手动启动）**：
 
    ```bash
-   # sh ~/storage/downloads/OpenBachelorC-M/start.sh
+   bash ~/storage/downloads/OpenBachelorC-M/start.sh
    ```
 
-   按 `Ctrl+X`，输入 `Y` 保存退出。
-
-2. **每次启动的手动操作流程**：
-
-   - 保持 Termux 在分屏或小窗模式
-   - 开启开发者选项中的无线调试功能
-   - 使用配对码配对设备：
-
-     ```bash
-     adb pair localhost:[配对端口]
-     ```
-
-     输入显示的六位配对码
-
-   - 连接设备：
-
-     ```bash
-     adb connect localhost:[连接端口]
-     ```
-
-   - 运行主脚本：
-
-     ```bash
-     cd ~/storage/downloads/OpenBachelorC-M/
-     bash main.sh
-     ```
+4. **根据 start 提示完成 ADB 连接**：
+   - 按提示输入连接端口。
+   - 脚本会执行：`adb connect 127.0.0.1:[连接端口]`。
+   - 连接后会自动继续启动 OpenBachelorC。
 
 ---
 
@@ -198,7 +184,7 @@
 
 **Q: 非 Root 用户每次都要手动操作吗？**
 
-- **A:** 是的。无线调试的配对码和端口在手机重启或无线调试开关重启后会失效，需要重新配对。可以考虑使用 Android 自动化应用（如「Tasker」或「MacroDroid」）来简化流程。
+- **A:** 通常每次都需要重新连接（`adb connect`），在手机重启或无线调试开关重启后还可能需要重新配对（`adb pair`）。现在脚本会对这两步提供引导提示。
 
 **Q: 使用 `setup.sh` 和备份恢复有什么区别？**
 

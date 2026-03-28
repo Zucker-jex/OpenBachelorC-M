@@ -75,13 +75,36 @@ else
 fi
 
 # ========== ADB network configuration ==========
-echo "Configuring ADB network..."
-tsu -s "setprop service.adb.tcp.port 5555"
-tsu -s "stop adbd"
-tsu -s "start adbd"
-
-# Wait for ADB service to start
-sleep 2
+# Check if user has su privilege
+if su -c "true" >/dev/null 2>&1; then
+    # Has root privilege
+    echo "Configuring ADB network..."
+    su -c "setprop service.adb.tcp.port 5555"
+    su -c "stop adbd"
+    su -c "start adbd"
+    # Wait for ADB service to start
+    sleep 2
+else
+    # No root privilege - prompt manual connection
+    echo ""
+    echo "========================================"
+    echo "Non-root user requires manual ADB connection"
+    echo "========================================"
+    echo ""
+    echo "Please connect ADB using the steps below:"
+    echo "1. On your phone, open 'Developer options' -> 'Wireless debugging'"
+    echo "2. Get the connect port from wireless debugging"
+    echo "3. IP is fixed to 127.0.0.1"
+    echo ""
+    read -p "Enter connect port (usually 5555 or similar): " CONNECT_PORT
+    
+    echo ""
+    echo "Running connect command..."
+    adb connect 127.0.0.1:$CONNECT_PORT
+    
+    # Wait for ADB connection
+    sleep 2
+fi
 
 # ========== Start OBC ==========
 echo "Starting OBC..."
