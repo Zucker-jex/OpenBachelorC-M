@@ -15,7 +15,7 @@ clang -shared -fPIC \
     $(python3-config --includes) \
     "frida-${FRIDA_VERSION}/frida/_frida/extension.c" \
     devkit/libfrida-core.a \
-    $(python3-config --ldflags --embed) \
+    $(python3-config --ldflags) \
     -llog
 
 export FRIDA_EXTENSION=$(realpath _frida.so)

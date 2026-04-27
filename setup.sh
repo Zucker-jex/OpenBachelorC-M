@@ -16,7 +16,7 @@ pkg install -y git python python-pip android-tools
 echo "Installing Python dependencies..."
 python -m pip install --upgrade pip
 python -m pip install "prompt-toolkit>=3.0.52,<4.0.0"
-python -m pip install "requests>=2.32.5,<3.0.0"
+python -m pip install "requests>=2.33.1,<3.0.0"
 python -m pip install "pycryptodome>=3.23.0"
 
 cd termux/ && bash build.sh
